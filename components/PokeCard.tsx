@@ -3,24 +3,14 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native'
 
 import { colorType, colorTypeBackground } from '@/app/utils/colorPicker'
 import { fetchPokemonDetail } from '@/app/services/pokemonApi'
+import { Link } from 'expo-router'
+import { TPokeData, TPokePartial } from '@/app/types/types'
 
 const capitalize = (s: string) =>
   s && String(s[0]).toUpperCase() + String(s).slice(1)
 
-export type TPoke = {
-  name: string
-  types: [{ type: { name: string } }]
-  sprites: { front_default: string }
-}
-
-export type TPokeColor = { color: { name: string } }
-
-export type TPokeData = {
-  data: { name: string; url: string }
-}
-
 const PokemonCard = ({ data }: TPokeData) => {
-  const [poke, setPoke] = useState<TPoke>({
+  const [poke, setPoke] = useState<TPokePartial>({
     name: '',
     types: [{ type: { name: '' } }],
     sprites: { front_default: '' },
@@ -35,18 +25,20 @@ const PokemonCard = ({ data }: TPokeData) => {
   }, [data])
 
   return (
-    <TouchableOpacity
-      style={styles.buttonContainer}
-      onPress={() => console.log(`Pokemon pressed: ${poke.name}`)}
+    <View
+      key={poke.name}
+      style={[
+        styles.cardContainer,
+        { backgroundColor: colorTypeBackground(poke.types[0].type.name) },
+      ]}
     >
-      <View
-        key={poke.name}
-        style={[
-          styles.cardContainer,
-          { backgroundColor: colorTypeBackground(poke.types[0].type.name) },
-        ]}
+      {/* Sección de texto (número, nombre y tipos) */}
+      <Link
+        href={{
+          pathname: '/details/[id]',
+          params: { id: poke.name },
+        }}
       >
-        {/* Sección de texto (número, nombre y tipos) */}
         <View style={styles.infoContainer}>
           <Text style={styles.pokemonNumber}>#001</Text>
           <Text style={styles.pokemonName}>{poke.name}</Text>
@@ -68,18 +60,17 @@ const PokemonCard = ({ data }: TPokeData) => {
               ))}
           </View>
         </View>
-
-        {/* Sección de imagen */}
-        {poke.sprites && (
-          <Image
-            style={styles.pokemonImage}
-            source={{
-              uri: `${poke.sprites.front_default}`,
-            }}
-          />
-        )}
-      </View>
-    </TouchableOpacity>
+      </Link>
+      {/* Sección de imagen */}
+      {poke.sprites && (
+        <Image
+          style={styles.pokemonImage}
+          source={{
+            uri: `${poke.sprites.front_default}`,
+          }}
+        />
+      )}
+    </View>
   )
 }
 
