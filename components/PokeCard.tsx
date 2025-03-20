@@ -1,44 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, Image, StyleSheet } from 'react-native'
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native'
+
+import { colorType, colorTypeBackground } from '@/app/utils/colorPicker'
 import { fetchPokemonDetail } from '@/app/services/pokemonApi'
 
 const capitalize = (s: string) =>
   s && String(s[0]).toUpperCase() + String(s).slice(1)
-
-function colorAPastel(colorName) {
-  // Crear un elemento temporal para obtener el color RGB del nombre
-  const tempElement = document.createElement('div')
-  tempElement.style.color = colorName
-  document.body.appendChild(tempElement)
-
-  // Obtener el color computado en formato RGB
-  const rgbColor = window.getComputedStyle(tempElement).color
-  document.body.removeChild(tempElement)
-
-  // Extraer los valores R, G y B del color
-  const rgbValues = rgbColor.match(/\d+/g).map(Number)
-
-  // Función para convertir un valor RGB a su representación hexadecimal
-  const componentToHex = (c) => {
-    const hex = c.toString(16)
-    return hex.length === 1 ? '0' + hex : hex
-  }
-
-  // Mezclar el color con blanco para obtener el tono pastel
-  const pastelFactor = 0.7 // Ajusta este factor para obtener tonos más o menos claros
-  const pastelRGB = rgbValues.map((value) =>
-    Math.round((1 - pastelFactor) * 255 + pastelFactor * value)
-  )
-
-  // Convertir el color pastel a formato hexadecimal
-  const pastelHex =
-    '#' +
-    componentToHex(pastelRGB[0]) +
-    componentToHex(pastelRGB[1]) +
-    componentToHex(pastelRGB[2])
-
-  return pastelHex
-}
 
 export type TPoke = {
   name: string
@@ -48,14 +15,15 @@ export type TPoke = {
 
 export type TPokeColor = { color: { name: string } }
 
-const PokemonCard = ({ data }) => {
+export type TPokeData = {
+  data: { name: string; url: string }
+}
+
+const PokemonCard = ({ data }: TPokeData) => {
   const [poke, setPoke] = useState<TPoke>({
     name: '',
     types: [{ type: { name: '' } }],
     sprites: { front_default: '' },
-  })
-  const [pokeColor, setPokeColor] = useState<TPokeColor>({
-    color: { name: '' },
   })
 
   useEffect(() => {
@@ -64,59 +32,59 @@ const PokemonCard = ({ data }) => {
       setPoke(detail)
     }
     loadPokemon()
-
-    const loadPokemonColor = async () => {
-      const detail = await fetchPokemonDetail(
-        `https://pokeapi.co/api/v2/pokemon-species/${data.name}/`
-      )
-      setPokeColor(detail)
-    }
-    loadPokemonColor()
   }, [data])
-  console.log(pokeColor.color.name)
 
   return (
-    <View
-      style={[
-        styles.cardContainer,
-        { backgroundColor: colorAPastel(pokeColor.color.name) },
-      ]}
+    <TouchableOpacity
+      style={styles.buttonContainer}
+      onPress={() => console.log(`Pokemon pressed: ${poke.name}`)}
     >
-      {/* Sección de texto (número, nombre y tipos) */}
-      <View style={styles.infoContainer}>
-        <Text style={styles.pokemonNumber}>#001</Text>
-        <Text style={styles.pokemonName}>{poke.name}</Text>
-        <View style={styles.typeRow}>
-          {poke.types &&
-            poke.types.map((type) => (
-              <View
-                style={[
-                  styles.typeBadge,
-                  { backgroundColor: pokeColor.color.name },
-                ]}
-              >
-                <Text style={styles.typeText}>
-                  {capitalize(type.type.name)}
-                </Text>
-              </View>
-            ))}
+      <View
+        key={poke.name}
+        style={[
+          styles.cardContainer,
+          { backgroundColor: colorTypeBackground(poke.types[0].type.name) },
+        ]}
+      >
+        {/* Sección de texto (número, nombre y tipos) */}
+        <View style={styles.infoContainer}>
+          <Text style={styles.pokemonNumber}>#001</Text>
+          <Text style={styles.pokemonName}>{poke.name}</Text>
+          <View style={styles.typeRow}>
+            {poke.types &&
+              poke.types.map((type) => (
+                <View
+                  style={[
+                    styles.typeBadge,
+                    {
+                      backgroundColor: colorType(poke.types[0].type.name),
+                    },
+                  ]}
+                >
+                  <Text style={styles.typeText}>
+                    {capitalize(type.type.name)}
+                  </Text>
+                </View>
+              ))}
+          </View>
         </View>
-      </View>
 
-      {/* Sección de imagen */}
-      {poke.sprites && (
-        <Image
-          style={styles.pokemonImage}
-          source={{
-            uri: `${poke.sprites.front_default}`,
-          }}
-        />
-      )}
-    </View>
+        {/* Sección de imagen */}
+        {poke.sprites && (
+          <Image
+            style={styles.pokemonImage}
+            source={{
+              uri: `${poke.sprites.front_default}`,
+            }}
+          />
+        )}
+      </View>
+    </TouchableOpacity>
   )
 }
 
 const styles = StyleSheet.create({
+  buttonContainer: { padding: 0 },
   cardContainer: {
     flexDirection: 'row',
     backgroundColor: '#A4D6A7', // tono verde claro
