@@ -22,3 +22,15 @@ export const fetchPokemonDetail = async (url: string) => {
     throw error
   }
 }
+
+export const fetchPokemonColor = async (url: string) => {
+  try {
+    const response = await fetch(url)
+    const data = await response.json()
+    console.log(data)
+    return data
+  } catch (error) {
+    console.error('Error al obtener el detalle del Pokémon:', error)
+    throw error
+  }
+}
