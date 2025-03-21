@@ -4,6 +4,7 @@ import { View, Text, Image, ScrollView, StyleSheet } from 'react-native'
 
 import { fetchPokemonDetail } from '../services/pokemonApi'
 import { TPoke } from '../types/types'
+import { colorType, colorTypeBackground } from '../utils/colorPicker'
 
 const DetailPokemon = () => {
   const [pokemon, setPokemon] = useState<TPoke>({
@@ -30,7 +31,12 @@ const DetailPokemon = () => {
 
   return (
     <>
-      <ScrollView style={styles.container}>
+      <ScrollView
+        style={[
+          styles.container,
+          { backgroundColor: colorTypeBackground(pokemon.types[0].type.name) },
+        ]}
+      >
         <View style={styles.header}>
           <Image
             source={{ uri: pokemon.sprites.front_default }}
@@ -41,7 +47,13 @@ const DetailPokemon = () => {
           </Text>
           <View style={styles.typeContainer}>
             {pokemon.types.map((t, index) => (
-              <Text key={index} style={styles.type}>
+              <Text
+                key={index}
+                style={[
+                  styles.type,
+                  { backgroundColor: colorType(pokemon.types[0].type.name) },
+                ]}
+              >
                 {t.type.name}
               </Text>
             ))}
@@ -50,7 +62,14 @@ const DetailPokemon = () => {
 
         <View style={styles.detailsContainer}>
           {/* <Text style={styles.description}>{pokemon.description}</Text> */}
-          <Text style={styles.sectionTitle}>Pokédex Data</Text>
+          <Text
+            style={[
+              styles.sectionTitle,
+              { color: colorType(pokemon.types[0].type.name) },
+            ]}
+          >
+            Pokédex Data
+          </Text>
           {/* <Text>Species: {pokemon.pokedexData.species}</Text> */}
           <Text>Height: {pokemon.height}</Text>
           <Text>Weight: {pokemon.weight}</Text>
@@ -63,6 +82,14 @@ const DetailPokemon = () => {
           {/* <Text>Base Friendship: {pokemon.training.baseFriendship}</Text> */}
           {/* <Text>Base Exp: {pokemon.training.baseExp}</Text> */}
           {/* <Text>Growth Rate: {pokemon.training.growthRate}</Text> */}
+          <Text
+            style={[
+              styles.sectionTitle,
+              { color: colorType(pokemon.types[0].type.name) },
+            ]}
+          >
+            Training
+          </Text>
         </View>
       </ScrollView>
     </>
@@ -70,13 +97,12 @@ const DetailPokemon = () => {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#A7DB8D' },
-  header: { alignItems: 'center', padding: 20 },
+  container: { flex: 1 },
+  header: { padding: 20, flexDirection: 'column' },
   pokemonImage: { width: 150, height: 150 },
   name: { fontSize: 24, fontWeight: 'bold', color: '#fff' },
-  typeContainer: { flexDirection: 'row', marginTop: 10 },
+  typeContainer: { marginTop: 10 },
   type: {
-    backgroundColor: '#4CAF50',
     color: '#fff',
     padding: 5,
     borderRadius: 5,
