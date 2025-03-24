@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native'
 
-import { colorType, colorTypeBackground } from '@/app/utils/colorPicker'
+import {
+  capitalize,
+  colorType,
+  colorTypeBackground,
+} from '@/app/utils/colorPicker'
 import { fetchPokemonDetail } from '@/app/services/pokemonApi'
 import { Link } from 'expo-router'
 import { TPokeData, TPokePartial } from '@/app/types/types'
-
-const capitalize = (s: string) =>
-  s && String(s[0]).toUpperCase() + String(s).slice(1)
 
 const PokemonCard = ({ data }: TPokeData) => {
   const [poke, setPoke] = useState<TPokePartial>({

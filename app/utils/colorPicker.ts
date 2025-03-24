@@ -1,3 +1,46 @@
+export function iconType(type: string) {
+  switch (type) {
+    case 'bug':
+      return require('./../../assets/pokeTypes/Bug.png')
+    case 'dark':
+      return require('./../../assets/pokeTypes/Dark.png')
+    case 'dragon':
+      return require('./../../assets/pokeTypes/Dragon.png')
+    case 'electric':
+      return require('./../../assets/pokeTypes/Electric.png')
+    case 'flying':
+      return require('./../../assets/pokeTypes/Flying.png')
+    case 'fire':
+      return require('./../../assets/pokeTypes/Fire.png')
+    case 'fighting':
+      return require('./../../assets/pokeTypes/Fighting.png')
+    case 'fairy':
+      return require('./../../assets/pokeTypes/Fairy.png')
+    case 'ghost':
+      return require('./../../assets/pokeTypes/Ghost.png')
+    case 'grass':
+      return require('./../../assets/pokeTypes/Grass.png')
+    case 'ground':
+      return require('./../../assets/pokeTypes/Ground.png')
+    case 'ice':
+      return require('./../../assets/pokeTypes/Ice.png')
+    case 'normal':
+      return require('./../../assets/pokeTypes/Normal.png')
+    case 'poison':
+      return require('./../../assets/pokeTypes/Poison.png')
+    case 'psychic':
+      return require('./../../assets/pokeTypes/Psychic.png')
+    case 'rock':
+      return require('./../../assets/pokeTypes/Rock.png')
+    case 'steel':
+      return require('./../../assets/pokeTypes/Steel.png')
+    case 'water':
+      return require('./../../assets/pokeTypes/Water.png')
+    default:
+      return require('./../../assets/pokeTypes/Bug.png')
+  }
+}
+
 export function colorType(type: string) {
   switch (type) {
     case 'bug':
@@ -82,4 +125,18 @@ export function colorTypeBackground(type: string) {
     default:
       return '#88D674'
   }
+}
+
+export function capitalize(s: string) {
+  return s && String(s[0]).toUpperCase() + String(s).slice(1)
+}
+
+/**
+ * Añade ceros a la izquierda de un número hasta alcanzar una longitud específica.
+ * @param {number} num - El número que se desea formatear.
+ * @param {number} len - La longitud total deseada de la cadena resultante.
+ * @returns {string} - El número formateado como cadena con ceros a la izquierda.
+ */
+export function addZeros(num: number, len: number) {
+  return num.toString().padStart(len, '0')
 }

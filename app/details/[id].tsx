@@ -4,7 +4,13 @@ import { View, Text, Image, ScrollView, StyleSheet } from 'react-native'
 
 import { fetchPokemonDetail } from '../services/pokemonApi'
 import { TPoke } from '../types/types'
-import { colorType, colorTypeBackground } from '../utils/colorPicker'
+import {
+  addZeros,
+  capitalize,
+  colorType,
+  colorTypeBackground,
+  iconType,
+} from '../utils/colorPicker'
 
 const DetailPokemon = () => {
   const [pokemon, setPokemon] = useState<TPoke>({
@@ -13,7 +19,10 @@ const DetailPokemon = () => {
     weight: 0,
     name: '',
     types: [{ type: { name: '' } }],
-    sprites: { front_default: '' },
+    sprites: {
+      front_default: '',
+      other: { 'official-artwork': { front_default: '' } },
+    },
     abilities: [{ ability: { name: '', url: '' }, is_hidden: true, slot: 0 }],
   })
   const { id } = useLocalSearchParams()
@@ -39,57 +48,20 @@ const DetailPokemon = () => {
       >
         <View style={styles.header}>
           <Image
-            source={{ uri: pokemon.sprites.front_default }}
+            source={{
+              uri: pokemon.sprites.other['official-artwork'].front_default,
+            }}
             style={styles.pokemonImage}
           />
-          <Text style={styles.name}>
-            #{pokemon.id} {pokemon.name}
-          </Text>
-          <View style={styles.typeContainer}>
-            {pokemon.types.map((t, index) => (
-              <Text
-                key={index}
-                style={[
-                  styles.type,
-                  { backgroundColor: colorType(pokemon.types[0].type.name) },
-                ]}
-              >
-                {t.type.name}
-              </Text>
-            ))}
+          <View style={styles.text}>
+            <Text style={styles.textId}>#{addZeros(pokemon.id, 3)}</Text>
+            <Text style={styles.name}>{capitalize(pokemon.name)}</Text>
+            <View style={styles.types}>
+              {pokemon.types.map((t, index) => (
+                <Image source={iconType(t.type.name)} />
+              ))}
+            </View>
           </View>
-        </View>
-
-        <View style={styles.detailsContainer}>
-          {/* <Text style={styles.description}>{pokemon.description}</Text> */}
-          <Text
-            style={[
-              styles.sectionTitle,
-              { color: colorType(pokemon.types[0].type.name) },
-            ]}
-          >
-            Pokédex Data
-          </Text>
-          {/* <Text>Species: {pokemon.pokedexData.species}</Text> */}
-          <Text>Height: {pokemon.height}</Text>
-          <Text>Weight: {pokemon.weight}</Text>
-          <Text>Abilities: {pokemon.abilities.join(', ')}</Text>
-          {/* <Text>Weaknesses: {pokemon.pokedexData.weaknesses.join(', ')}</Text> */}
-
-          {/* <Text style={styles.sectionTitle}>Training</Text> */}
-          {/* <Text>EV Yield: {pokemon.training.evYield}</Text> */}
-          {/* <Text>Catch Rate: {pokemon.training.catchRate}</Text> */}
-          {/* <Text>Base Friendship: {pokemon.training.baseFriendship}</Text> */}
-          {/* <Text>Base Exp: {pokemon.training.baseExp}</Text> */}
-          {/* <Text>Growth Rate: {pokemon.training.growthRate}</Text> */}
-          <Text
-            style={[
-              styles.sectionTitle,
-              { color: colorType(pokemon.types[0].type.name) },
-            ]}
-          >
-            Training
-          </Text>
         </View>
       </ScrollView>
     </>
@@ -97,25 +69,19 @@ const DetailPokemon = () => {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  header: { padding: 20, flexDirection: 'column' },
-  pokemonImage: { width: 150, height: 150 },
-  name: { fontSize: 24, fontWeight: 'bold', color: '#fff' },
-  typeContainer: { marginTop: 10 },
-  type: {
-    color: '#fff',
-    padding: 5,
-    borderRadius: 5,
-    marginRight: 5,
+  container: {},
+  header: { padding: 20, flexDirection: 'row', alignItems: 'center' },
+  text: { flexDirection: 'column', marginLeft: 30 },
+  textId: { color: '#17171B99', fontWeight: 'bold' },
+  name: {
+    flexDirection: 'column',
+    color: '#FFF',
+    fontSize: 30,
+    fontWeight: 'bold',
   },
-  detailsContainer: {
-    backgroundColor: '#fff',
-    padding: 20,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-  },
-  description: { fontSize: 16, marginBottom: 10 },
-  sectionTitle: { fontSize: 18, fontWeight: 'bold', marginTop: 15 },
+  pokemonImage: { width: 125, height: 125 },
+  types: { flexDirection: 'row' },
+  type: { margin: 5 },
 })
 
 export default DetailPokemon

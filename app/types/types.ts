@@ -4,7 +4,10 @@ export type TPoke = {
   weight: number
   name: string
   types: [{ type: { name: string } }]
-  sprites: { front_default: string }
+  sprites: {
+    front_default: string
+    other: { 'official-artwork': { front_default: string } }
+  }
   abilities: [
     { ability: { name: string; url: string }; is_hidden: boolean; slot: number }
   ]
